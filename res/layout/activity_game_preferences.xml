@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/game_preferences_container"
+    android:layout_width="fill_parent"
+    android:layout_height="match_parent" >
+    
+    <TextView 
+        android:id="@+id/grid_size_row_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/grid_size_row_title" />
+    
+    <RelativeLayout 
+        android:id="@+id/grid_size_row"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/grid_size_row_title">
+        
+        <TextView 
+            android:id="@+id/grid_size"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        
+        <Button 
+            android:id="@+id/grid_size_plus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" 
+            android:layout_alignParentRight="true"
+            android:text="+"/>
+        
+        <Button 
+            android:id="@+id/grid_size_minus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" 
+            android:text="-"
+            android:layout_toLeftOf="@id/grid_size_plus"/>        
+            
+    </RelativeLayout>
+    
+    <TextView 
+        android:id="@+id/aircraft_carrier_row_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/grid_size_row"
+        android:text="@string/aircraft_carrier_row_title" />
+    
+    <RelativeLayout 
+        android:id="@+id/aircraft_carrier_row"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/aircraft_carrier_row_title">
+        
+        <TextView 
+            android:id="@+id/aircraft_carrier"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        
+        <Button 
+            android:id="@+id/aircraft_carrier_plus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" 
+            android:layout_alignParentRight="true"
+            android:text="+"/>
+        
+        <Button 
+            android:id="@+id/aircraft_carrier_minus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" 
+            android:text="-"
+            android:layout_toLeftOf="@id/aircraft_carrier_plus"/>        
+    </RelativeLayout>
+    
+    <TextView 
+        android:id="@+id/battleship_row_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/aircraft_carrier_row"
+        android:text="@string/battleship_row_title" />
+    
+    <RelativeLayout 
+        android:id="@+id/battleship_row"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/battleship_row_title">
+        
+        <TextView 
+            android:id="@+id/battleship"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        
+        <Button 
+            android:id="@+id/battleship_plus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" 
+            android:layout_alignParentRight="true"
+            android:text="+"/>
+        
+        <Button 
+            android:id="@+id/battleship_minus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" 
+            android:text="-"
+            android:layout_toLeftOf="@id/battleship_plus"/>        
+    </RelativeLayout>
+    
+    <TextView 
+        android:id="@+id/submarine_row_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/battleship_row"
+        android:text="@string/submarine_row_title" />
+    
+    <RelativeLayout 
+        android:id="@+id/submarine_row"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/submarine_row_title">
+        
+        <TextView 
+            android:id="@+id/submarine"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+            
+        <Button 
+            android:id="@+id/submarine_plus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" 
+            android:layout_alignParentRight="true"
+            android:text="+"/>
+        
+        <Button 
+            android:id="@+id/submarine_minus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" 
+            android:text="-"
+            android:layout_toLeftOf="@id/submarine_plus"/>        
+    </RelativeLayout>
+    
+    <TextView 
+        android:id="@+id/destroyer_row_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/submarine_row"
+        android:text="@string/destroyer_row_title" />
+    
+    <RelativeLayout 
+        android:id="@+id/destroyer_row"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/destroyer_row_title">
+        
+        <TextView 
+            android:id="@+id/destroyer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+            
+        <Button 
+            android:id="@+id/destroyer_plus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" 
+            android:layout_alignParentRight="true"
+            android:text="+"/>
+        
+        <Button 
+            android:id="@+id/destroyer_minus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" 
+            android:text="-"
+            android:layout_toLeftOf="@id/destroyer_plus"/>        
+    </RelativeLayout>
+    
+    <TextView 
+        android:id="@+id/patrol_boat_row_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/destroyer_row"
+        android:text="@string/patrol_boat_row_title" />
+    
+    <RelativeLayout 
+        android:id="@+id/patrol_boat_row"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/patrol_boat_row_title">
+        
+        <TextView 
+            android:id="@+id/patrol_boat"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@id/patrol_boat_row" />
+        
+        <Button 
+            android:id="@+id/patrol_boat_plus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" 
+            android:layout_alignParentRight="true"
+            android:text="+"/>
+        
+        <Button 
+            android:id="@+id/patrol_boat_minus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toLeftOf="@id/patrol_boat_plus" 
+            android:text="-"/>        
+            
+    </RelativeLayout>
+    
+    <Button 
+        android:id="@+id/game_preferences_back"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true" 
+        android:text="Back"/>
+    
+    <Button 
+        android:id="@+id/game_preferences_next"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true" 
+        android:text="Next"/>
+
+</RelativeLayout>
+
+
+
+
+
+
+
+
+
+
