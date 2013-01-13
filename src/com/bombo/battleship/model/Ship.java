@@ -1,5 +1,6 @@
 package com.bombo.battleship.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import android.os.Parcel;
@@ -13,12 +14,15 @@ public class Ship implements Parcelable {
 	protected String mName;
 	protected boolean mPositioned;
 	protected Direction mDirection;
+	protected boolean mSelected;
+	protected ShipType mShipType;
 	
 	public Ship(ShipType shipType) {
 		mSize = shipType.getSize();
 		mType = shipType.getType();
 		mName = shipType.getName();
 		mPositioned = false;
+		mShipType = shipType;
 	}
 	
 	private Ship(Parcel in) {
@@ -29,6 +33,8 @@ public class Ship implements Parcelable {
 		mName = in.readString();
 		mDirection = (Direction) in.readSerializable();
 		in.readList(mPosition, BoardCell.class.getClassLoader());
+		mSelected = (in.readByte() == 1);
+		mShipType = (ShipType) in.readSerializable();
 	}
 
 	@Override
@@ -40,6 +46,8 @@ public class Ship implements Parcelable {
 		dest.writeString(mName);
 		dest.writeSerializable(mDirection);
 		dest.writeList(mPosition);
+		dest.writeByte((byte) (mSelected ? 1 : 0));
+		dest.writeSerializable(mShipType);
 		
 	}
 	
@@ -60,45 +68,113 @@ public class Ship implements Parcelable {
 		return 0;
 	}
 	
-	//Helper method to get all the board cells occupied by a ship given start and end cells
-	public void setShipPosition(BoardCell start, BoardCell end) {
+	//Helper method to get all the board cells occupied by a ship given start cell and direction
+	public void setShipPosition(BoardCell start, Direction direction, Board board) {
 		
-		if (start.getPosX() == end.getPosX()) {
-			if (start.getPosY() < end.getPosY()) {
-				for (int i=end.getPosY(); i >= start.getPosY(); i--)
-					mPosition.add(new BoardCell(start.getPosX(), i));
+		mDirection = direction;
+		
+		if (mDirection == null) {
+			
+			mPositioned = false;
+		} else {
+			
+			mPositioned = true;
+			mPosition = new ArrayList<BoardCell>();
+			
+			switch (mDirection) {
+			case NORTH:
 				
-				mDirection = Direction.EAST;
-			} else {
-				for (int i=start.getPosY(); i <= end.getPosY(); i++)
-					mPosition.add(new BoardCell(start.getPosX(), i));
+				for (int i=start.getPosY(); i > (start.getPosY() - mSize); i--) {
+					
+					board.getBoardCellFromCoord(start.getPosX(), i).setShipOver(this);
+					mPosition.add(board.getBoardCellFromCoord(start.getPosX(), i));
+				}
 				
-				mDirection = Direction.WEST;
-			}
-		} else if (start.getPosY() == end.getPosY()) {
-			if (start.getPosX() < end.getPosX()) {
-				for (int i=end.getPosX(); i >= start.getPosX(); i--)
-					mPosition.add(new BoardCell(i, start.getPosY()));
+				break;
 				
-				mDirection = Direction.NORTH;
-			} else {
-				for (int i=start.getPosX(); i <= end.getPosX(); i++)
-					mPosition.add(new BoardCell(i, start.getPosY()));
+			case EAST:
 				
-				mDirection = Direction.SOUTH;
+				for (int i=start.getPosX(); i < (start.getPosX() + mSize); i++) {
+					
+					board.getBoardCellFromCoord(i, start.getPosY()).setShipOver(this);
+					mPosition.add(board.getBoardCellFromCoord(i, start.getPosY()));
+				}
+				
+				break;
+				
+			case SOUTH:
+				
+				for (int i=start.getPosY(); i < (start.getPosY() + mSize); i++) {
+					
+					board.getBoardCellFromCoord(start.getPosX(), i).setShipOver(this);
+					mPosition.add(board.getBoardCellFromCoord(start.getPosX(), i));
+				}
+				
+				break;
+				
+			case WEST:
+				
+				for (int i=start.getPosX(); i > (start.getPosX() - mSize); i--) {
+					
+					board.getBoardCellFromCoord(i, start.getPosY()).setShipOver(this);
+					mPosition.add(board.getBoardCellFromCoord(i, start.getPosY()));
+				}
+				
+				break;
+				
+			default:
+				
+				break;
 			}
 		}
 		
-		mPositioned = true;
+	}
+	
+	public void remove() {
+		
+		for (BoardCell cell : mPosition) {
+			cell.free();
+		}
+		
+		mPosition = null;
+		mPositioned = false;
 	}
 	
 	//Helper method to see if a ship has already been positioned
 	public boolean isPositioned() {
 		return mPositioned;
 	}
+	
+	public boolean isSelected() {
+		return mSelected;
+	}
+	
+	public void select() {
+		mSelected = true;
+	}
+	
+	public void deselect() {
+		mSelected = false;
+	}
 
 	public String getName() {
 		return mName;
+	}
+
+	public ShipType getShipType() {
+		return mShipType;
+	}
+
+	public void setShipType(ShipType mShipType) {
+		this.mShipType = mShipType;
+	}
+	
+	public BoardCell getFirstCell() {
+		return mPosition.get(0);
+	}
+	
+	public Direction getDirection() {
+		return mDirection;
 	}
 	
 	

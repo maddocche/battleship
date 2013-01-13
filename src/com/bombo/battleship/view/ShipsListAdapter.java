@@ -5,26 +5,30 @@ import java.util.Collection;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.bombo.battleship.R;
+import com.bombo.battleship.model.CellDrawType;
 import com.bombo.battleship.model.Ship;
 
 public class ShipsListAdapter extends ArrayAdapter<Ship> {
 	
 	private LayoutInflater mInflater;
 	private Context mCtx;
+	private ShipConfigurationActivity mParent;
 	
-	public ShipsListAdapter(Context ctx) {
+	public ShipsListAdapter(Context ctx, ShipConfigurationActivity parent) {
 		super(ctx, R.layout.configuration_ship_item);
 		
 		mCtx = ctx;
+		mParent = parent;
 	}
 
-	@Override
-	public void addAll(Collection<? extends Ship> collection) {
+	public void addAllShips(Collection<? extends Ship> collection) {
 		
 		for (Ship ship: collection) {
 			this.add(ship);
@@ -37,14 +41,28 @@ public class ShipsListAdapter extends ArrayAdapter<Ship> {
 		mInflater = (LayoutInflater) mCtx.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		
 		View v;
-		
-		if (convertView == null) {
-			v = mInflater.inflate(R.layout.configuration_ship_item, null);
+		Ship ship = getItem(position);
+		TextView textView;
+
+		if (ship.isPositioned()) {
+			
+			v = mInflater.inflate(R.layout.configuration_ship_item_positioned, null);
+			textView = (TextView) v.findViewById(R.id.positioned_item_text);
+			
+			Button button = (Button) v.findViewById(R.id.positioned_item_button);
+			button.setOnClickListener(new RemoveShipOnClickListener(mParent, ship));
+			
 		} else {
-			v = convertView;
+			
+			if (ship.isSelected()) {
+				v = mInflater.inflate(R.layout.configuration_ship_item_selected, null);
+				textView = (TextView) v.findViewById(R.id.configuration_ship_item_selected);
+			} else {
+				v = mInflater.inflate(R.layout.configuration_ship_item, null);
+				textView = (TextView) v.findViewById(R.id.configuration_ship_item);
+			} 
 		}
 		
-		TextView textView = (TextView) v.findViewById(R.id.configuration_ship_item);
 		textView.setText(getItem(position).getName());
 		
 		return v;

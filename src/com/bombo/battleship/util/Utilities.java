@@ -1,5 +1,9 @@
 package com.bombo.battleship.util;
 
+import com.bombo.battleship.model.BoardCell;
+import com.bombo.battleship.model.Direction;
+import com.bombo.battleship.model.ShipType;
+
 import android.app.Activity;
 
 public class Utilities {
@@ -39,6 +43,33 @@ public class Utilities {
 		} while (parent.findViewById(mUniqueID) != null);
 		
 		return mUniqueID;
+	}
+	
+	public static int getEndCoord(BoardCell start, Direction direction, ShipType shipType) {
+		
+		switch (direction) {
+		case NORTH:
+			
+			return start.getPosY() - shipType.getSize() + 1;
+			
+		case EAST:
+			
+			return start.getPosX() + shipType.getSize() - 1;
+			
+		case SOUTH:
+			
+			return start.getPosY() + shipType.getSize() - 1;
+			
+		case WEST:
+			
+			return start.getPosX() - shipType.getSize() + 1;
+			
+		default:
+			break;
+		}
+		
+		return 0;
+		
 	}
 	
 	public static String convertItoC(int i) {

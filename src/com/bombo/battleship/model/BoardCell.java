@@ -2,6 +2,7 @@ package com.bombo.battleship.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
 
 public class BoardCell implements Parcelable {
 	
@@ -86,17 +87,18 @@ public class BoardCell implements Parcelable {
 		mHitted = true;		
 	}
 	
-	public void occupy() {
-		
-		mOccupied = true;
-	}
-
 	public Ship getShipOver() {
 		return mShipOver;
 	}
 
 	public void setShipOver(Ship mShipOver) {
 		this.mShipOver = mShipOver;
+		Log.d("Set position", "Cella occupata: " + Integer.toString(mPosX) + ", " + Integer.toString(mPosY));
+		mOccupied = true;
+	}
+	
+	public void free() {
+		mOccupied = false;
 	}
 	
 }

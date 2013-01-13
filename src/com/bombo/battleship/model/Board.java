@@ -1,5 +1,7 @@
 package com.bombo.battleship.model;
 
+import com.bombo.battleship.util.Utilities;
+
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -98,36 +100,50 @@ public class Board implements Parcelable{
 		return mGridSize;
 	}
 	
-	public boolean isValidPosition(BoardCell start, BoardCell end) {
+	public boolean isValidDirection(BoardCell start, Direction direction, ShipType shipType) {
 		
-		if (end.getPosX() <= 0 ||
-			end.getPosX() > mGridSize ||
-			end.getPosY() <= 0 ||
-			end.getPosY() > mGridSize)
-			
+		int endCell = Utilities.getEndCoord(start, direction, shipType);
+		
+		if (endCell <= 0 ||
+			endCell > mGridSize)
+						
 			return false;
 		
-		
-		if (start.getPosX() == end.getPosX()) {
-			if (start.getPosY() < end.getPosY()) {
-				for (int i=end.getPosY(); i >= start.getPosY(); i--)
-					if (getBoardCellFromCoord(start.getPosX(), i).isOccupied())
-						return false;
-			} else {
-				for (int i=start.getPosY(); i <= end.getPosY(); i++)
-					if (getBoardCellFromCoord(start.getPosX(), i).isOccupied())
-						return false;
-			}
-		} else if (start.getPosY() == end.getPosY()) {
-			if (start.getPosX() < end.getPosX()) {
-				for (int i=end.getPosX(); i >= start.getPosX(); i--)
-					if (getBoardCellFromCoord(i, start.getPosY()).isOccupied())
-						return false;
-			} else {
-				for (int i=start.getPosX(); i <= end.getPosX(); i++)
-					if (getBoardCellFromCoord(i, start.getPosY()).isOccupied())
-						return false;
-			}
+		switch (direction) {
+		case NORTH:
+			
+			for (int i=start.getPosY(); i >= endCell; i--)
+				if (getBoardCellFromCoord(start.getPosX(), i).isOccupied())
+					return false;
+			
+			break;
+			
+		case EAST:
+			
+			for (int i=start.getPosX(); i <= endCell; i++)
+				if (getBoardCellFromCoord(i, start.getPosY()).isOccupied())
+					return false;
+			
+			break;
+			
+		case SOUTH:
+			
+			for (int i=start.getPosY(); i <= endCell; i++)
+				if (getBoardCellFromCoord(start.getPosX(), i).isOccupied())
+					return false;
+			
+			break;
+			
+		case WEST:
+			
+			for (int i=start.getPosX(); i >= endCell; i--)
+				if (getBoardCellFromCoord(i, start.getPosY()).isOccupied())
+					return false;
+			
+			break;
+
+		default:
+			break;
 		}
 		
 		return true;

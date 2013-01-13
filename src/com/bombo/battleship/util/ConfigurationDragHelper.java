@@ -12,7 +12,9 @@ public class ConfigurationDragHelper {
 	private BoardCell mStartCell;
 	private boolean mDragStarted;
 	private Direction mDirection;
+	private Direction mPreviousDirection;
 	private int mCurrentID;
+	private boolean mPositionChosen;
 	
 	private ConfigurationDragHelper() {
 		
@@ -54,6 +56,10 @@ public class ConfigurationDragHelper {
 				
 				mStartCell = null;
 				mDragStarted = false;
+				mDirection = null;
+				mPreviousDirection = null;
+				mPositionChosen = false;
+				mCurrentID = 0;
 			}
 		}
 	}
@@ -84,6 +90,22 @@ public class ConfigurationDragHelper {
 
 	public void setCurrentID(int mCurrentID) {
 		this.mCurrentID = mCurrentID;
+	}
+
+	public Direction getPreviousDirection() {
+		return mPreviousDirection;
+	}
+
+	public void setPreviousDirection(Direction mPreviousDirection) {
+		this.mPreviousDirection = mPreviousDirection;
+	}
+
+	public boolean isPositionChosen() {
+		return mPositionChosen;
+	}
+
+	public void setPositionChosen(boolean mPositionChosen) {
+		this.mPositionChosen = mPositionChosen;
 	}
 	
 	
