@@ -27,15 +27,6 @@ public class ShipConfiguration implements Parcelable {
 		
 	}
 	
-	public static boolean validateShipPosition(ShipType shipType, BoardCell start, BoardCell end) {
-		
-		if (start.getPosX() == end.getPosX()) {
-			return ((Math.abs(start.getPosY() - end.getPosY()) + 1) == shipType.getSize());
-		} else {
-			return ((Math.abs(start.getPosX() - end.getPosX()) + 1) == shipType.getSize());
-		}
-	}
-
 	@Override
 	public void writeToParcel(Parcel dest, int flags) {
 		dest.writeInt(mShipsNumber);

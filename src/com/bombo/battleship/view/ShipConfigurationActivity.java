@@ -34,6 +34,7 @@ public class ShipConfigurationActivity extends Activity {
 	protected Board mBoard;
 	protected Ship mSelectedShip;
 	protected ShipsListAdapter mShipsListAdapter;
+	protected boolean isRecreated;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -47,29 +48,35 @@ public class ShipConfigurationActivity extends Activity {
 			mGamePreferences = savedInstanceState.getParcelable(GamePreferences.GAME_PREFERENCES_TAG);
 			mShipConfiguration = savedInstanceState.getParcelable(ShipConfiguration.SHIP_CONFIGURATION_TAG);
 			mBoard = savedInstanceState.getParcelable(Board.BOARD_TAG);
-			//Reset board IDs due to recreation of all the cells
-			mBoard.resetBoardIDs();
+			mSelectedShip = savedInstanceState.getParcelable(SELECTED_SHIP);
+			//Reset board IDs index due to recreation of all the cells
+			mBoard.resetBoardIDsIndex();
+			
+			isRecreated = true;
 		} else {
 			//In case is the first time activity is launched
 			mShipConfiguration = new ShipConfiguration();
 			mGamePreferences = getIntent().getExtras().getParcelable(GamePreferences.GAME_PREFERENCES_TAG);
 			mBoard = new Board(mGamePreferences.getGridSize());
+			mShipConfiguration.readShipsPreference(mGamePreferences);
+			
+			isRecreated = false;
 		}
-		
-		mShipConfiguration.readShipsPreference(mGamePreferences);
 		
 		TableLayout tableLayout = (TableLayout) findViewById(R.id.configuration_board);
 		
 		generateConfigurationBoard(tableLayout, mGamePreferences.getGridSize());
-		setBoardListeners();
+		setActionListener();
 		
 		ListView shipsList = (ListView) findViewById(R.id.configuration_ship_list);
 		mShipsListAdapter = new ShipsListAdapter(getApplication(), this);
-		
 		shipsList.setAdapter(mShipsListAdapter);
 		mShipsListAdapter.addAllShips(mShipConfiguration.getShips());
-		
 		shipsList.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+		
+		if (isRecreated) {
+			redrawPositionedShips();
+		}
 		
 		//Setting listener for ship list
 		shipsList.setOnItemClickListener(new OnItemClickListener() {
@@ -173,7 +180,7 @@ public class ShipConfigurationActivity extends Activity {
 	}
 	
 	//Sets cells listeners for handling ship position by drag and drop operation
-	public void setBoardListeners() {
+	public void setActionListener() {
 		
 		RelativeLayout parent = (RelativeLayout) findViewById(R.id.parent_container);
 		parent.setOnTouchListener(new View.OnTouchListener() {
@@ -185,10 +192,20 @@ public class ShipConfigurationActivity extends Activity {
 					
 					switch (event.getAction()) {
 					case MotionEvent.ACTION_DOWN:
+						
+						dispatchEventToBoard(event);
+						
+						break;
+						
 					case MotionEvent.ACTION_MOVE:
 					case MotionEvent.ACTION_UP:
 						
-						dispatchEventToBoard(event);
+						ConfigurationDragHelper dragHelper = ConfigurationDragHelper.getInstance();
+						
+						if (dragHelper.isDragStarted()) {
+							
+							dispatchEventToBoard(event);
+						}
 						
 						break;
 						
@@ -205,7 +222,6 @@ public class ShipConfigurationActivity extends Activity {
 		
 	public void dispatchEventToBoard(MotionEvent event) {
 		
-		
 		if (event.getAction() == MotionEvent.ACTION_UP) {
 			
 			ConfigurationDragHelper dragHelper = ConfigurationDragHelper.getInstance();
@@ -221,23 +237,22 @@ public class ShipConfigurationActivity extends Activity {
 				notifyDataChanged();
 			}
 			
-			if (dragHelper.isDragStarted()) {
-				
-				dragHelper.endDrag();
-			}
+			dragHelper.endDrag();
 			
 		} else {
 			
 			ImageView cell;
 			
+			int pointerX = (int) event.getX();
+			int pointerY = (int) event.getY();
+			
 			for (int cellID : mBoard.getIDs()) {
+				
 				cell = (ImageView) findViewById(cellID);
 				
 				TableRow tableRow = (TableRow) cell.getParent();
 				TableLayout tableLayout = (TableLayout) tableRow.getParent();
 				
-				int pointerX = (int) event.getX();
-				int pointerY = (int) event.getY();
 				int cellX = cell.getLeft() + tableLayout.getLeft();
 				int cellY = tableRow.getTop() + tableLayout.getTop();
 				int cellWidth = cell.getWidth();
@@ -246,22 +261,13 @@ public class ShipConfigurationActivity extends Activity {
 				if (cellX < pointerX && pointerX < (cellX + cellWidth) && 
 					cellY < pointerY && pointerY < (cellY + cellHeight)) {
 					
-					//BoardCell test = mBoard.getBoardCellFromId(cellID);
 					ConfigurationDragHelper dragHelper = ConfigurationDragHelper.getInstance();
-					/*Log.d("DragOperation", "Pos x: " + Integer.toString(test.getPosX()) + "- Pos y: "  
-						+ Integer.toString(test.getPosY()));*/
 					
 					switch (event.getActionMasked()) {
 					//When a cell is pressed start drag process, using this cell as start position
 					case MotionEvent.ACTION_DOWN:
 						
 						BoardCell boardCell = mBoard.getBoardCellFromId(cellID);
-						
-						if (dragHelper.isDragStarted()) {
-							drawChoiceStatus(mSelectedShip.getShipType(), dragHelper.getStartCell()
-									, null, true);
-							dragHelper.endDrag();
-						} 
 						
 						dragHelper.startDrag(boardCell);
 						dragHelper.setPositionChosen(false);
@@ -270,15 +276,11 @@ public class ShipConfigurationActivity extends Activity {
 						
 						break;
 						
-						//When the user enter a new view recalculate chosen direction
+					//When the user enter a new view recalculate chosen direction
 					case MotionEvent.ACTION_MOVE:
 						
 						BoardCell start = dragHelper.getStartCell();
 						BoardCell current = mBoard.getBoardCellFromId(cellID);
-						
-						if (cellID != dragHelper.getCurrentID()) {
-							dragHelper.setCurrentID(cellID);
-						}
 						
 						int offsetX = current.getPosX() - start.getPosX();
 						int offsetY = current.getPosY() - start.getPosY();
@@ -299,10 +301,12 @@ public class ShipConfigurationActivity extends Activity {
 							}
 						}
 						
+						//Reset direction if not valid
 						if (dragHelper.getDirection() != null)
 							if (!mBoard.isValidDirection(start, dragHelper.getDirection(), mSelectedShip.getShipType()))
 								dragHelper.setDirection(null);
 						
+						//Redraw choice status only when direction changes, avoiding unnecessary redrawing
 						if  (dragHelper.getDirection() != dragHelper.getPreviousDirection()) {
 							
 							dragHelper.setPreviousDirection(dragHelper.getDirection());
@@ -522,6 +526,18 @@ public class ShipConfigurationActivity extends Activity {
 
 	public void notifyDataChanged() {
 		mShipsListAdapter.notifyDataSetChanged();
+	}
+	
+	public void redrawPositionedShips() {
+		
+		for (Ship ship : mShipConfiguration.getShips()) {
+			
+			if (ship.isPositioned()) {
+				
+				drawShipPosition(ship.getShipType(), ship.getFirstCell(), ship.getDirection()
+						, CellDrawType.SHIP_OVER, false);
+			}
+		}
 	}
 	
 }

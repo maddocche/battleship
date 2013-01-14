@@ -93,7 +93,6 @@ public class BoardCell implements Parcelable {
 
 	public void setShipOver(Ship mShipOver) {
 		this.mShipOver = mShipOver;
-		Log.d("Set position", "Cella occupata: " + Integer.toString(mPosX) + ", " + Integer.toString(mPosY));
 		mOccupied = true;
 	}
 	

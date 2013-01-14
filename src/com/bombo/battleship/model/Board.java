@@ -87,7 +87,7 @@ public class Board implements Parcelable{
 		mIndex++;
 	}
 	
-	public void resetBoardIDs() {
+	public void resetBoardIDsIndex() {
 		
 		mIndex = 0;
 	}

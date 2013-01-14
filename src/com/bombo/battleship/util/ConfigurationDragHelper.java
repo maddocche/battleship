@@ -13,7 +13,6 @@ public class ConfigurationDragHelper {
 	private boolean mDragStarted;
 	private Direction mDirection;
 	private Direction mPreviousDirection;
-	private int mCurrentID;
 	private boolean mPositionChosen;
 	
 	private ConfigurationDragHelper() {
@@ -59,7 +58,6 @@ public class ConfigurationDragHelper {
 				mDirection = null;
 				mPreviousDirection = null;
 				mPositionChosen = false;
-				mCurrentID = 0;
 			}
 		}
 	}
@@ -84,14 +82,6 @@ public class ConfigurationDragHelper {
 		return d == mDirection;
 	}
 	
-	public int getCurrentID() {
-		return mCurrentID;
-	}
-
-	public void setCurrentID(int mCurrentID) {
-		this.mCurrentID = mCurrentID;
-	}
-
 	public Direction getPreviousDirection() {
 		return mPreviousDirection;
 	}
