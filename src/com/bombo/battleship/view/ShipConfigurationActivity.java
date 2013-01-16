@@ -49,6 +49,11 @@ public class ShipConfigurationActivity extends Activity {
 			mShipConfiguration = savedInstanceState.getParcelable(ShipConfiguration.SHIP_CONFIGURATION_TAG);
 			mBoard = savedInstanceState.getParcelable(Board.BOARD_TAG);
 			mSelectedShip = savedInstanceState.getParcelable(SELECTED_SHIP);
+			
+			//Restore ships position
+			for ( Ship ship : mShipConfiguration.getShips() )
+				ship.restoreShipPosition( mBoard );
+			
 			//Reset board IDs index due to recreation of all the cells
 			mBoard.resetBoardIDsIndex();
 			

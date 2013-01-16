@@ -9,8 +9,6 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.bombo.battleship.R;
-import com.bombo.battleship.R.id;
-import com.bombo.battleship.R.layout;
 import com.bombo.battleship.model.GamePreferences;
 
 public class GamePreferencesActivity extends Activity 
@@ -247,7 +245,6 @@ public class GamePreferencesActivity extends Activity
 		case R.id.game_preferences_next:
 			
 			Intent intent = new Intent(getApplicationContext(), ShipConfigurationActivity.class);
-			intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
 			intent.putExtra(GamePreferences.GAME_PREFERENCES_TAG, mGamePreferences);
 			
 			startActivity(intent);

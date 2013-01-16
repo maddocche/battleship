@@ -23,12 +23,6 @@ public class Board implements Parcelable{
 		mBoard = new BoardCell[mSize];
 		mIDs = new int[mSize];
 		
-		//int currentCell = 0;
-		
-		//for (int i = 1; i < gridSize; i++ ) 
-		//	for (int j = 1; j < gridSize; j++ )
-		//		mBoard[currentCell++] = new BoardCell(i, j);
-				
 	}
 
 	private Board(Parcel in) {

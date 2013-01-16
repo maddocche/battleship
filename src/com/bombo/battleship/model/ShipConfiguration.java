@@ -1,8 +1,5 @@
 package com.bombo.battleship.model;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -10,20 +7,21 @@ public class ShipConfiguration implements Parcelable {
 
 	public static final String SHIP_CONFIGURATION_TAG = "ShipConfiguration";
 	
-	private List<Ship> mShips;
+	private Ship[] mShips;
 	private int mShipsNumber;
 	private int mPositionedShips;
 	
 	public ShipConfiguration() {
 		mShipsNumber = 0;
 		mPositionedShips = 0;
-		mShips = new ArrayList<Ship>();
+		mShips = null;
 	}
 	
 	private ShipConfiguration(Parcel in) {
 		mShipsNumber = in.readInt();
 		mPositionedShips = in.readInt();
-		in.readList(mShips, Ship.class.getClassLoader());
+		//in.readList(mShips, Ship.class.getClassLoader());
+		mShips = ( Ship[] ) in.readArray(null);
 		
 	}
 	
@@ -31,7 +29,8 @@ public class ShipConfiguration implements Parcelable {
 	public void writeToParcel(Parcel dest, int flags) {
 		dest.writeInt(mShipsNumber);
 		dest.writeInt(mPositionedShips);
-		dest.writeList(mShips);
+		//dest.writeList(mShips);
+		dest.writeArray(mShips);
 	}
 	
 	public static final Parcelable.Creator<ShipConfiguration> CREATOR
@@ -54,37 +53,40 @@ public class ShipConfiguration implements Parcelable {
 	//Helper method to insert non-positioned ships into the configuration from the preferences
 	public void readShipsPreference(GamePreferences gamePreferences) {
 		
+		mShips = new Ship[ gamePreferences.getTotalShips() ];
+		int ix = 0;
+		
 		for (int i = 0; i < gamePreferences.getAircraftCarrierNumber(); i++) {
-			mShips.add(new Ship(ShipType.AIRCRAFT_CARRIER));
+			mShips[ ix++ ] = new Ship(ShipType.AIRCRAFT_CARRIER);
 			++mShipsNumber;
 		}
 		
 		for (int i = 0; i < gamePreferences.getBattleshipNumber(); i++) {
-			mShips.add(new Ship(ShipType.BATTLESHIP));
+			mShips[ ix++ ] = new Ship(ShipType.BATTLESHIP);
 			++mShipsNumber;
 		}
 		
 		for (int i = 0; i < gamePreferences.getSubmarineNumber(); i++) {
-			mShips.add(new Ship(ShipType.SUBMARINE));
+			mShips[ ix++ ] = new Ship(ShipType.SUBMARINE);
 			++mShipsNumber;
 		}
 		
 		for (int i = 0; i < gamePreferences.getDestroyerNumber(); i++) {
-			mShips.add(new Ship(ShipType.DESTROYER));
+			mShips[ ix++ ] = new Ship(ShipType.DESTROYER);
 			++mShipsNumber;
 		}
 		
 		for (int i = 0; i < gamePreferences.getPatrolBoatNumber(); i++) {
-			mShips.add(new Ship(ShipType.PATROL_BOAT));
+			mShips[ ix++ ] = new Ship(ShipType.PATROL_BOAT);
 			++mShipsNumber;
 		}
 	}
 
-	public List<Ship> getShips() {
+	public Ship[] getShips() {
 		return mShips;
 	}
 
-	public void setShips(List<Ship> mShips) {
+	public void setShips( Ship[] mShips ) {
 		this.mShips = mShips;
 	}
 	

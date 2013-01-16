@@ -100,7 +100,7 @@ public class GamePreferences implements Parcelable{
 	public void setPatrolBoatNumber(int mPatrolBoatNumber) {
 		this.mPatrolBoatNumber = mPatrolBoatNumber;
 	}
-	
+
 	public void writeToParcel(Parcel out, int flags)  {
 		out.writeInt(mGridSize);
 		out.writeInt(mAircraftCarrierNumber);
@@ -126,4 +126,12 @@ public class GamePreferences implements Parcelable{
 		return 0;
 	}
 	
+	public int getTotalShips() {
+		return mAircraftCarrierNumber +
+				mBattleshipNumber + 
+				mDestroyerNumber + 
+				mSubmarineNumber + 
+				mPatrolBoatNumber;
+	}
+		
 }

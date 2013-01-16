@@ -1,14 +1,11 @@
 package com.bombo.battleship.model;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import android.os.Parcel;
 import android.os.Parcelable;
 
 public class Ship implements Parcelable {
 
-	protected List<BoardCell> mPosition;
+	protected BoardCell[] mPosition;
 	protected int mSize;
 	protected int mType;
 	protected String mName;
@@ -16,6 +13,8 @@ public class Ship implements Parcelable {
 	protected Direction mDirection;
 	protected boolean mSelected;
 	protected ShipType mShipType;
+	protected int mStartX;
+	protected int mStartY;
 	
 	public Ship(ShipType shipType) {
 		mSize = shipType.getSize();
@@ -23,6 +22,9 @@ public class Ship implements Parcelable {
 		mName = shipType.getName();
 		mPositioned = false;
 		mShipType = shipType;
+		mStartX = 0;
+		mStartY = 0;
+		
 	}
 	
 	private Ship(Parcel in) {
@@ -32,9 +34,12 @@ public class Ship implements Parcelable {
 		mType = in.readInt();
 		mName = in.readString();
 		mDirection = (Direction) in.readSerializable();
-		in.readList(mPosition, BoardCell.class.getClassLoader());
+		//in.readList(mPosition, BoardCell.class.getClassLoader());
+		//mPosition = ( BoardCell [] ) in.readArray( null );
 		mSelected = (in.readByte() == 1);
 		mShipType = (ShipType) in.readSerializable();
+		mStartX = in.readInt();
+		mStartY = in.readInt();
 	}
 
 	@Override
@@ -45,9 +50,12 @@ public class Ship implements Parcelable {
 		dest.writeInt(mType);
 		dest.writeString(mName);
 		dest.writeSerializable(mDirection);
-		dest.writeList(mPosition);
+		//dest.writeList(mPosition);
+		//dest.writeArray(mPosition);
 		dest.writeByte((byte) (mSelected ? 1 : 0));
 		dest.writeSerializable(mShipType);
+		dest.writeInt( mStartX );
+		dest.writeInt( mStartY );
 		
 	}
 	
@@ -68,10 +76,20 @@ public class Ship implements Parcelable {
 		return 0;
 	}
 	
+	//Called after restoring the activity to avoid StackOverflow due to circular reference between Ship and BoardCell
+	public void restoreShipPosition( Board board ) {
+		
+		setShipPosition( new BoardCell( mStartX, mStartY ), mDirection, board);
+		
+	}
+	
 	//Helper method to get all the board cells occupied by a ship given start cell and direction
 	public void setShipPosition(BoardCell start, Direction direction, Board board) {
 		
 		mDirection = direction;
+		int ix = 0;
+		mStartX = start.getPosX();
+		mStartY = start.getPosY();
 		
 		if (mDirection == null) {
 			
@@ -79,15 +97,16 @@ public class Ship implements Parcelable {
 		} else {
 			
 			mPositioned = true;
-			mPosition = new ArrayList<BoardCell>();
+			//mPosition = new ArrayList<BoardCell>();
+			mPosition = new BoardCell[ mShipType.getSize() ];
 			
 			switch (mDirection) {
 			case NORTH:
 				
 				for (int i=start.getPosY(); i > (start.getPosY() - mSize); i--) {
 					
-					board.getBoardCellFromCoord(start.getPosX(), i).setShipOver(this);
-					mPosition.add(board.getBoardCellFromCoord(start.getPosX(), i));
+					mPosition[ ix ] = board.getBoardCellFromCoord(start.getPosX(), i);
+					mPosition[ ix++ ].setShipOver(this);
 				}
 				
 				break;
@@ -96,8 +115,8 @@ public class Ship implements Parcelable {
 				
 				for (int i=start.getPosX(); i < (start.getPosX() + mSize); i++) {
 					
-					board.getBoardCellFromCoord(i, start.getPosY()).setShipOver(this);
-					mPosition.add(board.getBoardCellFromCoord(i, start.getPosY()));
+					mPosition[ ix ] = board.getBoardCellFromCoord(i, start.getPosY());
+					mPosition[ ix++ ].setShipOver(this);
 				}
 				
 				break;
@@ -106,8 +125,8 @@ public class Ship implements Parcelable {
 				
 				for (int i=start.getPosY(); i < (start.getPosY() + mSize); i++) {
 					
-					board.getBoardCellFromCoord(start.getPosX(), i).setShipOver(this);
-					mPosition.add(board.getBoardCellFromCoord(start.getPosX(), i));
+					mPosition[ ix ] = board.getBoardCellFromCoord(start.getPosX(), i);
+					mPosition[ ix++ ].setShipOver(this);
 				}
 				
 				break;
@@ -116,8 +135,8 @@ public class Ship implements Parcelable {
 				
 				for (int i=start.getPosX(); i > (start.getPosX() - mSize); i--) {
 					
-					board.getBoardCellFromCoord(i, start.getPosY()).setShipOver(this);
-					mPosition.add(board.getBoardCellFromCoord(i, start.getPosY()));
+					mPosition[ ix ] = board.getBoardCellFromCoord(i, start.getPosY());
+					mPosition[ ix++ ].setShipOver(this);
 				}
 				
 				break;
@@ -170,7 +189,7 @@ public class Ship implements Parcelable {
 	}
 	
 	public BoardCell getFirstCell() {
-		return mPosition.get(0);
+		return mPosition[ 0 ];
 	}
 	
 	public Direction getDirection() {
