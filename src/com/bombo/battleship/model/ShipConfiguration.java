@@ -7,14 +7,17 @@ public class ShipConfiguration implements Parcelable {
 
 	public static final String SHIP_CONFIGURATION_TAG = "ShipConfiguration";
 	
-	private Ship[] mShips;
-	private int mShipsNumber;
-	private int mPositionedShips;
+	protected Ship[] mShips;
+	protected int mShipsNumber;
+	protected int mPositionedShips;
+	protected boolean mAllShipsPositioned;
+	
 	
 	public ShipConfiguration() {
 		mShipsNumber = 0;
 		mPositionedShips = 0;
 		mShips = null;
+		mAllShipsPositioned = false;
 	}
 	
 	private ShipConfiguration(Parcel in) {
@@ -22,6 +25,7 @@ public class ShipConfiguration implements Parcelable {
 		mPositionedShips = in.readInt();
 		//in.readList(mShips, Ship.class.getClassLoader());
 		mShips = ( Ship[] ) in.readArray(null);
+		mAllShipsPositioned = (in.readByte() == 1);
 		
 	}
 	
@@ -31,6 +35,7 @@ public class ShipConfiguration implements Parcelable {
 		dest.writeInt(mPositionedShips);
 		//dest.writeList(mShips);
 		dest.writeArray(mShips);
+		dest.writeByte((byte) (mAllShipsPositioned ? 1 : 0));
 	}
 	
 	public static final Parcelable.Creator<ShipConfiguration> CREATOR
@@ -88,6 +93,33 @@ public class ShipConfiguration implements Parcelable {
 
 	public void setShips( Ship[] mShips ) {
 		this.mShips = mShips;
+	}
+	
+	public void putShipOnBoard(Ship ship, BoardCell start, Direction direction, Board board) {
+		
+		ship.setShipPosition(start, direction, board);
+		mPositionedShips++;
+		
+		if (mPositionedShips == mShipsNumber) 
+			mAllShipsPositioned = true;
+		
+	}
+	
+	public void removeShipFromBoard(Ship ship) {
+		
+		ship.remove();
+		mPositionedShips--;
+		
+		if (mPositionedShips != mShipsNumber)
+			mAllShipsPositioned = false;
+	}
+
+	public boolean areAllShipsPositioned() {
+		return mAllShipsPositioned;
+	}
+
+	public void setAllShipsPositioned(boolean mAllShipsPositioned) {
+		this.mAllShipsPositioned = mAllShipsPositioned;
 	}
 	
 }

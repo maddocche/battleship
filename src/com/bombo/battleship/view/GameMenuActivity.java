@@ -1,15 +1,13 @@
 package com.bombo.battleship.view;
 
-import com.bombo.battleship.R;
-import com.bombo.battleship.R.id;
-import com.bombo.battleship.R.layout;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
+
+import com.bombo.battleship.R;
 
 public class GameMenuActivity extends Activity {
 

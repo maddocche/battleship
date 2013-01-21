@@ -34,8 +34,6 @@ public class Ship implements Parcelable {
 		mType = in.readInt();
 		mName = in.readString();
 		mDirection = (Direction) in.readSerializable();
-		//in.readList(mPosition, BoardCell.class.getClassLoader());
-		//mPosition = ( BoardCell [] ) in.readArray( null );
 		mSelected = (in.readByte() == 1);
 		mShipType = (ShipType) in.readSerializable();
 		mStartX = in.readInt();
@@ -50,8 +48,6 @@ public class Ship implements Parcelable {
 		dest.writeInt(mType);
 		dest.writeString(mName);
 		dest.writeSerializable(mDirection);
-		//dest.writeList(mPosition);
-		//dest.writeArray(mPosition);
 		dest.writeByte((byte) (mSelected ? 1 : 0));
 		dest.writeSerializable(mShipType);
 		dest.writeInt( mStartX );

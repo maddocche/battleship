@@ -19,9 +19,13 @@ public class RemoveShipOnClickListener implements OnClickListener {
 	@Override
 	public void onClick(View v) {
 		
-		mParent.drawShipPosition(mShip.getShipType(), mShip.getFirstCell()
+		mParent.getBoardAdapter().drawShipPosition(mShip.getShipType(), mShip.getFirstCell()
 				, mShip.getDirection(), CellDrawType.VOID, false);
-		mShip.remove();
+		
+		mParent.getShipConfiguration().removeShipFromBoard( mShip );
+		
+		mParent.disableStartGameButton();
+		
 		mParent.notifyDataChanged();
 	}
 

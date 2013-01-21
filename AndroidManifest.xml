@@ -28,6 +28,9 @@
         <activity
             android:name="com.bombo.battleship.view.ShipConfigurationActivity" >
         </activity>
+        <activity
+            android:name="com.bombo.battleship.view.GameplayActivity" >
+        </activity>
     </application>
 
 </manifest>

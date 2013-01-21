@@ -33,14 +33,17 @@ public class Utilities {
 	
 	public int getNextId(Activity parent) {
 		
-		if (mUniqueID <= 0) {
-			mUniqueID = Integer.MAX_VALUE;
-		}
-		
-		do {
+		synchronized (mLock) {
 			
-			--mUniqueID;
-		} while (parent.findViewById(mUniqueID) != null);
+			if (mUniqueID <= 0) {
+				mUniqueID = Integer.MAX_VALUE;
+			}
+			
+			do {
+				
+				--mUniqueID;
+			} while (parent.findViewById(mUniqueID) != null);
+		}
 		
 		return mUniqueID;
 	}

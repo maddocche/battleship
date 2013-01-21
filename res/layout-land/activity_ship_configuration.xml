@@ -8,15 +8,23 @@
 	    android:id="@+id/configuration_board"
 	    android:layout_width="wrap_content"
 	    android:layout_height="wrap_content"
-	    android:gravity="center_horizontal"
-	    android:layout_centerHorizontal="true"
-	    android:layout_alignParentLeft="true">
-	    
-	</TableLayout> 
+	    android:layout_alignParentLeft="true" />
 
+	<Button 
+	    android:id="@+id/configuration_end"
+	    android:layout_height="wrap_content"
+	    android:layout_width="wrap_content"
+	    android:enabled="false"
+	    android:text="Start game"
+	    android:layout_alignParentRight="true"
+	    android:layout_alignParentBottom="true" />
+	
 	<ListView 
 	    android:id="@+id/configuration_ship_list"
 	    android:layout_height="wrap_content"
 	    android:layout_width="wrap_content"
-	    android:layout_toRightOf="@id/configuration_board"></ListView>
+	    android:layout_toRightOf="@id/configuration_board"
+	    android:layout_above="@id/configuration_end"
+	    android:layout_alignParentTop="true" />
+	
 </RelativeLayout>

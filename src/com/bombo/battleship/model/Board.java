@@ -1,9 +1,9 @@
 package com.bombo.battleship.model;
 
-import com.bombo.battleship.util.Utilities;
-
 import android.os.Parcel;
 import android.os.Parcelable;
+
+import com.bombo.battleship.util.Utilities;
 
 public class Board implements Parcelable{
 
@@ -166,4 +166,5 @@ public class Board implements Parcelable{
 		
 		return mIDs[((cell.getPosY() - 1) * mGridSize) + (cell.getPosY() - 1)];
 	}
+	
 }

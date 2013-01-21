@@ -172,11 +172,12 @@ public final class R {
         public static final int battleship_plus=0x7f080010;
         public static final int battleship_row=0x7f08000e;
         public static final int battleship_row_title=0x7f08000d;
-        public static final int configuration_board=0x7f080024;
-        public static final int configuration_ship_item=0x7f080026;
-        public static final int configuration_ship_item_positioned=0x7f080027;
-        public static final int configuration_ship_item_selected=0x7f08002a;
-        public static final int configuration_ship_list=0x7f080025;
+        public static final int configuration_board=0x7f080027;
+        public static final int configuration_end=0x7f080028;
+        public static final int configuration_ship_item=0x7f08002a;
+        public static final int configuration_ship_item_positioned=0x7f08002b;
+        public static final int configuration_ship_item_selected=0x7f08002e;
+        public static final int configuration_ship_list=0x7f080029;
         public static final int destroyer=0x7f080019;
         public static final int destroyer_minus=0x7f08001b;
         public static final int destroyer_plus=0x7f08001a;
@@ -185,20 +186,23 @@ public final class R {
         public static final int game_preferences_back=0x7f080021;
         public static final int game_preferences_container=0x7f080002;
         public static final int game_preferences_next=0x7f080022;
+        public static final int gameplay_container=0x7f080023;
         public static final int grid_size=0x7f080005;
         public static final int grid_size_minus=0x7f080007;
         public static final int grid_size_plus=0x7f080006;
         public static final int grid_size_row=0x7f080004;
         public static final int grid_size_row_title=0x7f080003;
         public static final int multi_player_game=0x7f080001;
-        public static final int parent_container=0x7f080023;
+        public static final int opponent_board=0x7f080025;
+        public static final int parent_container=0x7f080026;
         public static final int patrol_boat=0x7f08001e;
         public static final int patrol_boat_minus=0x7f080020;
         public static final int patrol_boat_plus=0x7f08001f;
         public static final int patrol_boat_row=0x7f08001d;
         public static final int patrol_boat_row_title=0x7f08001c;
-        public static final int positioned_item_button=0x7f080029;
-        public static final int positioned_item_text=0x7f080028;
+        public static final int player_board=0x7f080024;
+        public static final int positioned_item_button=0x7f08002d;
+        public static final int positioned_item_text=0x7f08002c;
         public static final int single_player_game=0x7f080000;
         public static final int submarine=0x7f080014;
         public static final int submarine_minus=0x7f080016;
@@ -209,10 +213,11 @@ public final class R {
     public static final class layout {
         public static final int activity_game_menu=0x7f030000;
         public static final int activity_game_preferences=0x7f030001;
-        public static final int activity_ship_configuration=0x7f030002;
-        public static final int configuration_ship_item=0x7f030003;
-        public static final int configuration_ship_item_positioned=0x7f030004;
-        public static final int configuration_ship_item_selected=0x7f030005;
+        public static final int activity_gameplay=0x7f030002;
+        public static final int activity_ship_configuration=0x7f030003;
+        public static final int configuration_ship_item=0x7f030004;
+        public static final int configuration_ship_item_positioned=0x7f030005;
+        public static final int configuration_ship_item_selected=0x7f030006;
     }
     public static final class menu {
         public static final int activity_game_menu=0x7f070000;
