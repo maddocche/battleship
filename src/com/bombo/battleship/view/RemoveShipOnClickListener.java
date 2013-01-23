@@ -22,11 +22,11 @@ public class RemoveShipOnClickListener implements OnClickListener {
 		mParent.getBoardAdapter().drawShipPosition(mShip.getShipType(), mShip.getFirstCell()
 				, mShip.getDirection(), CellDrawType.VOID, false);
 		
-		mParent.getShipConfiguration().removeShipFromBoard( mShip );
+		mParent.getBoard().removeShip( mShip );
 		
 		mParent.disableStartGameButton();
 		
-		mParent.notifyDataChanged();
+		mParent.notifyShipsListChanged();
 	}
 
 }

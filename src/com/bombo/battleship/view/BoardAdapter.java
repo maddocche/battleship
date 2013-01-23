@@ -30,6 +30,10 @@ public class BoardAdapter {
 		mBoardView = boardView;
 	}
 	
+	public Board getBoard() {
+		return mBoard;
+	}
+	
 	//Dinamically generate the content of the table layout based on the chosen grid size
 	public void generateBoardView() {
 		
@@ -87,7 +91,7 @@ public class BoardAdapter {
 						uniqueID = util.getNextId( mParent );
 						imageView.setId(uniqueID);
 						tableRow.addView(imageView, rowParams);
-						mBoard.addBoardCell(uniqueID, x, y);
+						mBoard.mapCellID( uniqueID, x, y );
 					}
 					
 				}

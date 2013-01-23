@@ -22,25 +22,41 @@ public class GameplayActivity extends Activity {
 		
 		mGameController = new GameplayController();
 		
-		ShipConfiguration playerConfiguration = getIntent().getExtras().getParcelable(ShipConfiguration.SHIP_CONFIGURATION_TAG);
+		Bundle extras;
 		
-		mGameController.setPlayerConfiguration(playerConfiguration);
+		if ( savedInstanceState == null ) {
+			
+			extras = getIntent().getExtras();
+		} else {
+			
+			extras = savedInstanceState;
+		}
 		
 		GamePreferences gamePreferences = getIntent().getExtras().getParcelable(GamePreferences.GAME_PREFERENCES_TAG);
 		
-		Board playerBoard = new Board(gamePreferences.getGridSize());
+		mGameController.setGamePreferences( gamePreferences );
 		
-		mGameController.setPlayerBoard(playerBoard);
+		ShipConfiguration playerConfiguration = extras.getParcelable( ShipConfigurationActivity.PLAYER_CONFIGURATION );
+		Board playerBoard = new Board( gamePreferences.getGridSize(), playerConfiguration );
+		
+		mGameController.setPlayerBoard(playerBoard);		
+		
+		ShipConfiguration opponentConfiguration = extras.getParcelable( ShipConfigurationActivity.OPPONENT_CONFIGURATION );
+		Board opponentBoard = new Board( gamePreferences.getGridSize(), opponentConfiguration );
+		
+		mGameController.setOpponentBoard(opponentBoard);
 		
 		TableLayout playerBoardView = (TableLayout) findViewById(R.id.player_board);
 		TableLayout opponentBoardView = (TableLayout) findViewById(R.id.opponent_board);
 		
 		BoardAdapter playerBoardAdapter = new BoardAdapter(this, playerBoard, playerBoardView);
-		BoardAdapter opponentBoardAdapter = new BoardAdapter(this, playerBoard, opponentBoardView);
+		BoardAdapter opponentBoardAdapter = new BoardAdapter(this, opponentBoard, opponentBoardView);
 		
-		playerBoardAdapter.generateBoardView();
-		opponentBoardAdapter.generateBoardView();
-			
+		mGameController.setPlayerBoardAdapter(playerBoardAdapter);
+		mGameController.setOpponentBoardAdapter(opponentBoardAdapter);
+		
+		mGameController.generateBoardViews();
+		mGameController.drawShipsOnBoards();
 	}
 
 	@Override
@@ -51,6 +67,14 @@ public class GameplayActivity extends Activity {
 	@Override
 	protected void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
+		
+		outState.putParcelable( GamePreferences.GAME_PREFERENCES_TAG
+				, mGameController.getGamePreferences() );
+		outState.putParcelable( ShipConfigurationActivity.PLAYER_CONFIGURATION
+				, mGameController.getPlayerBoard().getShipConfiguration() );
+		outState.putParcelable( ShipConfigurationActivity.OPPONENT_CONFIGURATION
+				, mGameController.getOpponentBoard().getShipConfiguration() );
+		
 	}
 
 }

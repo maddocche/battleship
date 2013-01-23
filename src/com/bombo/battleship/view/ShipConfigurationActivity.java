@@ -3,6 +3,7 @@ package com.bombo.battleship.view;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
@@ -22,10 +23,14 @@ import com.bombo.battleship.model.GamePreferences;
 import com.bombo.battleship.model.Ship;
 import com.bombo.battleship.model.ShipConfiguration;
 import com.bombo.battleship.util.ConfigurationDragHelper;
+import com.bombo.battleship.util.Utilities;
 
 public class ShipConfigurationActivity extends Activity {
 
 	public static final String SELECTED_SHIP = "SelectedShip";
+	public static final String LOG_TAG = "Ship_conf";
+	public static final String PLAYER_CONFIGURATION = "Player_configuration";
+	public static final String OPPONENT_CONFIGURATION = "Opponent_configuration";
 	
 	protected GamePreferences mGamePreferences;
 	protected ShipConfiguration mShipConfiguration;
@@ -40,28 +45,28 @@ public class ShipConfigurationActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_ship_configuration);
 		
+		Log.d( LOG_TAG, "Creating activity..." );
 		
 		//If activity is being recreated due to a configuration change, restore saved game preferences
 		//and ship configuration
 		if (savedInstanceState != null) {
-			mGamePreferences = savedInstanceState.getParcelable(GamePreferences.GAME_PREFERENCES_TAG);
-			mShipConfiguration = savedInstanceState.getParcelable(ShipConfiguration.SHIP_CONFIGURATION_TAG);
-			mBoard = savedInstanceState.getParcelable(Board.BOARD_TAG);
-			mSelectedShip = savedInstanceState.getParcelable(SELECTED_SHIP);
 			
-			//Restore ships position
-			for ( Ship ship : mShipConfiguration.getShips() )
-				ship.restoreShipPosition( mBoard );
+			Log.d( LOG_TAG, "...restoring..." );
 			
-			//Reset board IDs index due to recreation of all the cells
-			mBoard.resetBoardIDsIndex();
+			mGamePreferences = savedInstanceState.getParcelable( GamePreferences.GAME_PREFERENCES_TAG );
+			mBoard = savedInstanceState.getParcelable( Board.BOARD_TAG );
+			mShipConfiguration = mBoard.getShipConfiguration();
+			mSelectedShip = savedInstanceState.getParcelable( SELECTED_SHIP );
 			
 			isRecreated = true;
 		} else {
+			
+			Log.d( LOG_TAG, "...first time..." );
+			
 			//In case is the first time activity is launched
-			mShipConfiguration = new ShipConfiguration();
 			mGamePreferences = getIntent().getExtras().getParcelable(GamePreferences.GAME_PREFERENCES_TAG);
-			mBoard = new Board(mGamePreferences.getGridSize());
+			mShipConfiguration = new ShipConfiguration();
+			mBoard = new Board( mGamePreferences.getGridSize(), mShipConfiguration );
 			mShipConfiguration.readShipsPreference(mGamePreferences);
 			
 			isRecreated = false;
@@ -83,6 +88,9 @@ public class ShipConfigurationActivity extends Activity {
 		if (isRecreated) {
 			
 			mBoardAdapter.redrawPositionedShips(mShipConfiguration);
+			
+			if ( mShipConfiguration.areAllShipsPositioned() )
+				enableStartGameButton();
 		}
 		
 		//Setting listener for ship list
@@ -95,7 +103,7 @@ public class ShipConfigurationActivity extends Activity {
 					
 					selectedShip.deselect();
 					mSelectedShip = null;
-					notifyDataChanged();
+					notifyShipsListChanged();
 				} else if (!selectedShip.isPositioned()) {
 					
 					if (mSelectedShip != null )
@@ -103,7 +111,7 @@ public class ShipConfigurationActivity extends Activity {
 					
 					selectedShip.select();
 					mSelectedShip = selectedShip;
-					notifyDataChanged();
+					notifyShipsListChanged();
 				}
 				
 			}
@@ -115,11 +123,21 @@ public class ShipConfigurationActivity extends Activity {
 			@Override
 			public void onClick(View v) {
 				
+				ShipConfiguration opponentConfiguration = Utilities.generateRandomConfiguration( mGamePreferences );
+				
 				Intent intent = new Intent(getApplicationContext(), GameplayActivity.class);
-				intent.putExtra(ShipConfiguration.SHIP_CONFIGURATION_TAG, mShipConfiguration);
-				intent.putExtra(GamePreferences.GAME_PREFERENCES_TAG, mGamePreferences);
+				Bundle extras = new Bundle();
+				
+				extras.putParcelable( GamePreferences.GAME_PREFERENCES_TAG, mGamePreferences );
+				extras.putParcelable( PLAYER_CONFIGURATION, mShipConfiguration );
+				extras.putParcelable( OPPONENT_CONFIGURATION, opponentConfiguration );
+				
+				intent.putExtras( extras );
+				
 				
 				startActivity(intent);
+				
+				finish();
 			}
 		});
 		
@@ -129,9 +147,12 @@ public class ShipConfigurationActivity extends Activity {
 	protected void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
 		
+		Log.d(LOG_TAG, "Saving instance state...");
+		
 		outState.putParcelable(GamePreferences.GAME_PREFERENCES_TAG, mGamePreferences);
 		outState.putParcelable(ShipConfiguration.SHIP_CONFIGURATION_TAG, mShipConfiguration);
-		outState.putParcelable(Board.BOARD_TAG, mBoard);
+		outState.putParcelable( Board.BOARD_TAG, mBoard );
+		
 		outState.putParcelable(SELECTED_SHIP, mSelectedShip);
 	}
 	
@@ -185,8 +206,8 @@ public class ShipConfigurationActivity extends Activity {
 			mBoardAdapter.drawChoiceStatus(mSelectedShip.getShipType(), dragHelper.getStartCell()
 					, dragHelper.getDirection(), true);
 			
-			mShipConfiguration.putShipOnBoard(mSelectedShip, dragHelper.getStartCell()
-					, dragHelper.getDirection(), mBoard);
+			mBoard.putShip(mSelectedShip, dragHelper.getStartCell()
+					, dragHelper.getDirection());
 			
 			if ( mShipConfiguration.areAllShipsPositioned() ) {
 				
@@ -196,7 +217,7 @@ public class ShipConfigurationActivity extends Activity {
 			if (mSelectedShip.isPositioned()) {
 				mSelectedShip.deselect();
 				mSelectedShip = null;
-				notifyDataChanged();
+				notifyShipsListChanged();
 			}
 			
 			dragHelper.endDrag();
@@ -291,7 +312,7 @@ public class ShipConfigurationActivity extends Activity {
 		 
 	}
 
-	public void notifyDataChanged() {
+	public void notifyShipsListChanged() {
 		mShipsListAdapter.notifyDataSetChanged();
 	}
 	
@@ -309,8 +330,8 @@ public class ShipConfigurationActivity extends Activity {
 		endConfiguration.setEnabled( false );
 	}
 
-	public ShipConfiguration getShipConfiguration() {
-		return mShipConfiguration;
+	public Board getBoard() {
+		return mBoard;
 	}
 	
 	public BoardAdapter getBoardAdapter() {

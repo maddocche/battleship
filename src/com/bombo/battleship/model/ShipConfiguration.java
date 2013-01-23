@@ -12,7 +12,6 @@ public class ShipConfiguration implements Parcelable {
 	protected int mPositionedShips;
 	protected boolean mAllShipsPositioned;
 	
-	
 	public ShipConfiguration() {
 		mShipsNumber = 0;
 		mPositionedShips = 0;
@@ -23,17 +22,20 @@ public class ShipConfiguration implements Parcelable {
 	private ShipConfiguration(Parcel in) {
 		mShipsNumber = in.readInt();
 		mPositionedShips = in.readInt();
-		//in.readList(mShips, Ship.class.getClassLoader());
-		mShips = ( Ship[] ) in.readArray(null);
-		mAllShipsPositioned = (in.readByte() == 1);
 		
+		Object[] ships = in.readArray( Ship.class.getClassLoader() );
+		mShips = new Ship[ ships.length ];
+		
+		for( int i = 0; i < ships.length; i++ ) 
+			mShips[ i ] = ( Ship ) ships[ i ];
+		
+		mAllShipsPositioned = (in.readByte() == 1);
 	}
 	
 	@Override
 	public void writeToParcel(Parcel dest, int flags) {
 		dest.writeInt(mShipsNumber);
 		dest.writeInt(mPositionedShips);
-		//dest.writeList(mShips);
 		dest.writeArray(mShips);
 		dest.writeByte((byte) (mAllShipsPositioned ? 1 : 0));
 	}
@@ -91,26 +93,22 @@ public class ShipConfiguration implements Parcelable {
 		return mShips;
 	}
 
-	public void setShips( Ship[] mShips ) {
-		this.mShips = mShips;
-	}
-	
-	public void putShipOnBoard(Ship ship, BoardCell start, Direction direction, Board board) {
+	public void addShipPosition( Ship ship, BoardCell start, Direction direction, Board board ) {
 		
-		ship.setShipPosition(start, direction, board);
+		ship.setShipPosition( start, direction, board );
 		mPositionedShips++;
 		
-		if (mPositionedShips == mShipsNumber) 
+		if ( mPositionedShips == mShipsNumber ) 
 			mAllShipsPositioned = true;
 		
 	}
 	
-	public void removeShipFromBoard(Ship ship) {
+	public void removeShipFromBoard( Ship ship, Board board ) {
 		
-		ship.remove();
+		ship.remove( board );
 		mPositionedShips--;
 		
-		if (mPositionedShips != mShipsNumber)
+		if ( mPositionedShips != mShipsNumber )
 			mAllShipsPositioned = false;
 	}
 
@@ -118,8 +116,4 @@ public class ShipConfiguration implements Parcelable {
 		return mAllShipsPositioned;
 	}
 
-	public void setAllShipsPositioned(boolean mAllShipsPositioned) {
-		this.mAllShipsPositioned = mAllShipsPositioned;
-	}
-	
 }

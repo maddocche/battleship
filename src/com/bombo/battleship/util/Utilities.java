@@ -1,10 +1,14 @@
 package com.bombo.battleship.util;
 
+import android.app.Activity;
+
+import com.bombo.battleship.model.Board;
 import com.bombo.battleship.model.BoardCell;
 import com.bombo.battleship.model.Direction;
+import com.bombo.battleship.model.GamePreferences;
+import com.bombo.battleship.model.Ship;
+import com.bombo.battleship.model.ShipConfiguration;
 import com.bombo.battleship.model.ShipType;
-
-import android.app.Activity;
 
 public class Utilities {
 	
@@ -75,7 +79,71 @@ public class Utilities {
 		
 	}
 	
-	public static String convertItoC(int i) {
+	public static ShipConfiguration generateRandomConfiguration( GamePreferences gamePreferences ) {
+		
+		ShipConfiguration configuration = new ShipConfiguration();
+		configuration.readShipsPreference( gamePreferences );
+		int gridSize = gamePreferences.getGridSize();
+		Board board = new Board( gridSize, configuration );
+		Direction direction;
+		BoardCell start;
+		
+		for ( Ship ship : configuration.getShips() ) {
+			
+			do {
+				
+				start = generateRandomStartCell( gridSize );
+				direction = generateRandomDirection();
+				
+			} while ( !board.isValidDirection( start, direction, ship.getShipType() ) );
+			
+			board.putShip( ship, start, direction );
+		}
+		
+		return configuration;
+	}
+	
+	public static BoardCell generateRandomStartCell( int gridSize ) {
+		
+		int startX = ( int ) Math.round( Math.random() * ( gridSize - 1 ) ) + 1;
+		int startY = ( int ) Math.round( Math.random() * ( gridSize - 1 ) ) + 1;
+		
+		return new BoardCell( startX, startY );
+	}
+	
+	public static Direction generateRandomDirection() {
+		
+		int dir = ( int ) Math.round( Math.random() * 3 ) + 1;
+		
+		switch (dir) {
+		case 1:
+			
+			return Direction.NORTH;
+			
+		case 2:
+			
+			return Direction.EAST;
+			
+		case 3:
+			
+			return Direction.SOUTH;
+			
+		case 4:
+			
+			return Direction.WEST;
+			
+		default:
+			
+			return null;
+		}
+	}
+	
+	public static int getIndexFromCoord( int x, int y, int gridSize ) {
+		
+		return ((y - 1) * gridSize) + (x - 1);
+	}
+	
+	public static String convertItoC( int i ) {
 		
 		switch (i) {
 		case 0:

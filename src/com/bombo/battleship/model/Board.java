@@ -13,35 +13,49 @@ public class Board implements Parcelable{
 	protected int mSize;
 	protected int mGridSize;
 	protected int[] mIDs;
-	protected int mIndex;
+	protected ShipConfiguration mShipConfiguration;
 	
-	public Board(int gridSize) {
+	public Board( int gridSize, ShipConfiguration shipConfiguration ) {
 		
 		mGridSize = gridSize;
 		mSize = gridSize * gridSize;
-		mIndex = 0;
-		mBoard = new BoardCell[mSize];
-		mIDs = new int[mSize];
+		mBoard = new BoardCell[ mSize ];
 		
+		int i = 0;
+		
+		for ( int y = 1; y <= mGridSize; y++ )
+			for ( int x = 1; x <= mGridSize; x++ )
+				mBoard[ i++ ] = new BoardCell( x, y );
+		
+		mIDs = new int[ mSize ];
+		mShipConfiguration = shipConfiguration;
 	}
 
-	private Board(Parcel in) {
+	private Board( Parcel in ) {
 		
 		mSize = in.readInt();
 		mGridSize = in.readInt();
-		mIndex = in.readInt();
-		mBoard = (BoardCell[]) in.readArray(null);
-		in.readIntArray(mIDs);
+		
+		Object[] values = in.readArray( BoardCell.class.getClassLoader() );
+		mBoard = new BoardCell[ values.length ];
+		
+		for ( int i = 0; i < values.length; i++ )
+			mBoard[ i ] = ( BoardCell ) values[ i ];
+		
+		mIDs = new int[ mSize ];
+		
+		in.readIntArray( mIDs );
+		mShipConfiguration = in.readParcelable( ShipConfiguration.class.getClassLoader() );
 	}
 	
 	@Override
 	public void writeToParcel(Parcel dest, int flags) {
 		
-		dest.writeInt(mSize);
-		dest.writeInt(mGridSize);
-		dest.writeInt(mIndex);
-		dest.writeArray(mBoard);
-		dest.writeIntArray(mIDs);
+		dest.writeInt( mSize );
+		dest.writeInt( mGridSize );
+		dest.writeArray( mBoard );
+		dest.writeIntArray( mIDs );
+		dest.writeParcelable( mShipConfiguration, 0 );
 	}
 	
 	public static final Parcelable.Creator<Board> CREATOR
@@ -61,37 +75,21 @@ public class Board implements Parcelable{
 		return 0;
 	}
 	
-	public BoardCell getBoardCell(int cell) {
+	public void mapCellID(int ID, int x, int y) {
 		
-		return mBoard[cell];
-	}
-
-	public BoardCell[] getBoard() {
-		return mBoard;
-	}
-
-	public void setBoard(BoardCell[] mBoard) {
-		this.mBoard = mBoard;
+		mIDs[ Utilities.getIndexFromCoord( x, y, mGridSize ) ] = ID;
 	}
 	
-	public void addBoardCell(int ID, int x, int y) {
-		
-		mIDs[mIndex] = ID;
-		mBoard[mIndex] = new BoardCell(x, y);
-		mIndex++;
-	}
-	
-	public void resetBoardIDsIndex() {
-		
-		mIndex = 0;
-	}
-
 	public int[] getIDs() {
 		return mIDs;
 	}
 
 	public int getGridSize() {
 		return mGridSize;
+	}
+	
+	public ShipConfiguration getShipConfiguration() {
+		return mShipConfiguration;
 	}
 	
 	public boolean isValidDirection(BoardCell start, Direction direction, ShipType shipType) {
@@ -145,12 +143,12 @@ public class Board implements Parcelable{
 	
 	public BoardCell getBoardCellFromCoord(int x, int y) {
 		
-		return mBoard[((y - 1) * mGridSize) + (x - 1)];
+		return mBoard[ Utilities.getIndexFromCoord( x, y, mGridSize ) ];
 	}
 	
 	public int getIdFromCoord(int x, int y) {
 		
-		return mIDs[((y - 1) * mGridSize) + (x - 1)];
+		return mIDs[ Utilities.getIndexFromCoord( x, y, mGridSize ) ];
 	}
 	
 	public BoardCell getBoardCellFromId(int id) {
@@ -162,9 +160,14 @@ public class Board implements Parcelable{
 		return null;
 	}
 	
-	public int getIdFromBoardCell(BoardCell cell) {
+	public void putShip( Ship ship, BoardCell start, Direction direction ) {
 		
-		return mIDs[((cell.getPosY() - 1) * mGridSize) + (cell.getPosY() - 1)];
+		mShipConfiguration.addShipPosition( ship, start, direction, this );
+	}
+	
+	public void removeShip( Ship ship ) {
+		
+		mShipConfiguration.removeShipFromBoard( ship, this ); 
 	}
 	
 }

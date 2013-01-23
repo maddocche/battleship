@@ -5,7 +5,6 @@ import android.os.Parcelable;
 
 public class Ship implements Parcelable {
 
-	protected BoardCell[] mPosition;
 	protected int mSize;
 	protected int mType;
 	protected String mName;
@@ -72,18 +71,11 @@ public class Ship implements Parcelable {
 		return 0;
 	}
 	
-	//Called after restoring the activity to avoid StackOverflow due to circular reference between Ship and BoardCell
-	public void restoreShipPosition( Board board ) {
-		
-		setShipPosition( new BoardCell( mStartX, mStartY ), mDirection, board);
-		
-	}
-	
-	//Helper method to get all the board cells occupied by a ship given start cell and direction
+	//Helper method to set a ship position given start cell and direction
 	public void setShipPosition(BoardCell start, Direction direction, Board board) {
 		
 		mDirection = direction;
-		int ix = 0;
+		
 		mStartX = start.getPosX();
 		mStartY = start.getPosY();
 		
@@ -93,47 +85,33 @@ public class Ship implements Parcelable {
 		} else {
 			
 			mPositioned = true;
-			//mPosition = new ArrayList<BoardCell>();
-			mPosition = new BoardCell[ mShipType.getSize() ];
-			
+
 			switch (mDirection) {
 			case NORTH:
 				
-				for (int i=start.getPosY(); i > (start.getPosY() - mSize); i--) {
-					
-					mPosition[ ix ] = board.getBoardCellFromCoord(start.getPosX(), i);
-					mPosition[ ix++ ].setShipOver(this);
-				}
+				for (int i=start.getPosY(); i > (start.getPosY() - mSize); i--) 
+					board.getBoardCellFromCoord(start.getPosX(), i).setShipOver( this );
 				
 				break;
 				
 			case EAST:
 				
-				for (int i=start.getPosX(); i < (start.getPosX() + mSize); i++) {
-					
-					mPosition[ ix ] = board.getBoardCellFromCoord(i, start.getPosY());
-					mPosition[ ix++ ].setShipOver(this);
-				}
+				for (int i=start.getPosX(); i < (start.getPosX() + mSize); i++) 
+					board.getBoardCellFromCoord(i, start.getPosY()).setShipOver( this );
 				
 				break;
 				
 			case SOUTH:
 				
-				for (int i=start.getPosY(); i < (start.getPosY() + mSize); i++) {
-					
-					mPosition[ ix ] = board.getBoardCellFromCoord(start.getPosX(), i);
-					mPosition[ ix++ ].setShipOver(this);
-				}
+				for (int i=start.getPosY(); i < (start.getPosY() + mSize); i++) 
+					board.getBoardCellFromCoord(start.getPosX(), i).setShipOver( this );
 				
 				break;
 				
 			case WEST:
 				
-				for (int i=start.getPosX(); i > (start.getPosX() - mSize); i--) {
-					
-					mPosition[ ix ] = board.getBoardCellFromCoord(i, start.getPosY());
-					mPosition[ ix++ ].setShipOver(this);
-				}
+				for (int i=start.getPosX(); i > (start.getPosX() - mSize); i--) 
+					board.getBoardCellFromCoord(i, start.getPosY()).setShipOver( this );
 				
 				break;
 				
@@ -145,13 +123,44 @@ public class Ship implements Parcelable {
 		
 	}
 	
-	public void remove() {
+	public void remove(Board board) {
 		
-		for (BoardCell cell : mPosition) {
-			cell.free();
+		BoardCell start = new BoardCell(mStartX, mStartY);
+		
+		switch (mDirection) {
+		case NORTH:
+			
+			for (int i=start.getPosY(); i > (start.getPosY() - mSize); i--) 
+				board.getBoardCellFromCoord(start.getPosX(), i).free();
+			
+			break;
+			
+		case EAST:
+			
+			for (int i=start.getPosX(); i < (start.getPosX() + mSize); i++) 
+				board.getBoardCellFromCoord(i, start.getPosY()).free();
+			
+			break;
+			
+		case SOUTH:
+			
+			for (int i=start.getPosY(); i < (start.getPosY() + mSize); i++) 
+				board.getBoardCellFromCoord(start.getPosX(), i).free();
+			
+			break;
+			
+		case WEST:
+			
+			for (int i=start.getPosX(); i > (start.getPosX() - mSize); i--) 
+				board.getBoardCellFromCoord(i, start.getPosY()).free();
+			
+			break;
+			
+		default:
+			
+			break;
 		}
 		
-		mPosition = null;
 		mPositioned = false;
 	}
 	
@@ -185,7 +194,7 @@ public class Ship implements Parcelable {
 	}
 	
 	public BoardCell getFirstCell() {
-		return mPosition[ 0 ];
+		return new BoardCell(mStartX, mStartY);
 	}
 	
 	public Direction getDirection() {

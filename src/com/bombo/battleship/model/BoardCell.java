@@ -25,7 +25,7 @@ public class BoardCell implements Parcelable {
 		//...and then convert it back into a boolean
 		mHitted = (in.readByte() == 1);
 		mOccupied = (in.readByte() == 1);
-		mShipOver = in.readParcelable(null);
+		mShipOver = in.readParcelable( Ship.class.getClassLoader() );
 	}
 
 	public int getPosX() {
