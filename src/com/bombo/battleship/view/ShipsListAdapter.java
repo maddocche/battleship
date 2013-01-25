@@ -59,7 +59,7 @@ public class ShipsListAdapter extends ArrayAdapter<Ship> {
 			} 
 		}
 		
-		textView.setText(getItem(position).getName());
+		textView.setText(getItem(position).getShipType().getName());
 		
 		return v;
 	}

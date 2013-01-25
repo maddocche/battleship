@@ -5,52 +5,48 @@ import android.os.Parcelable;
 
 public class Ship implements Parcelable {
 
-	protected int mSize;
-	protected int mType;
-	protected String mName;
 	protected boolean mPositioned;
 	protected Direction mDirection;
 	protected boolean mSelected;
 	protected ShipType mShipType;
 	protected int mStartX;
 	protected int mStartY;
+	protected int mHittedParts;
+	protected boolean mSinked;
 	
 	public Ship(ShipType shipType) {
-		mSize = shipType.getSize();
-		mType = shipType.getType();
-		mName = shipType.getName();
 		mPositioned = false;
 		mShipType = shipType;
 		mStartX = 0;
 		mStartY = 0;
+		mHittedParts = 0;
+		mSinked = false;
 		
 	}
 	
 	private Ship(Parcel in) {
 		//...and then convert it back into a boolean
 		mPositioned = (in.readByte() == 1);
-		mSize = in.readInt();
-		mType = in.readInt();
-		mName = in.readString();
-		mDirection = (Direction) in.readSerializable();
-		mSelected = (in.readByte() == 1);
-		mShipType = (ShipType) in.readSerializable();
+		mDirection = ( Direction ) in.readSerializable();
+		mSelected = ( in.readByte() == 1 );
+		mShipType = ( ShipType ) in.readSerializable();
 		mStartX = in.readInt();
 		mStartY = in.readInt();
+		mHittedParts = in.readInt();
+		mSinked = ( in.readByte() == 1 );
 	}
 
 	@Override
 	public void writeToParcel(Parcel dest, int flags) {
 		//To write a boolean in a parcel you have to convert it into a byte...
 		dest.writeByte((byte) (mPositioned ? 1 : 0));
-		dest.writeInt(mSize);
-		dest.writeInt(mType);
-		dest.writeString(mName);
 		dest.writeSerializable(mDirection);
 		dest.writeByte((byte) (mSelected ? 1 : 0));
 		dest.writeSerializable(mShipType);
 		dest.writeInt( mStartX );
 		dest.writeInt( mStartY );
+		dest.writeInt( mHittedParts );
+		dest.writeByte( ( byte ) ( mSinked ? 1 : 0 ) );
 		
 	}
 	
@@ -74,6 +70,8 @@ public class Ship implements Parcelable {
 	//Helper method to set a ship position given start cell and direction
 	public void setShipPosition(BoardCell start, Direction direction, Board board) {
 		
+		int size = mShipType.getSize();
+		
 		mDirection = direction;
 		
 		mStartX = start.getPosX();
@@ -89,28 +87,28 @@ public class Ship implements Parcelable {
 			switch (mDirection) {
 			case NORTH:
 				
-				for (int i=start.getPosY(); i > (start.getPosY() - mSize); i--) 
+				for (int i=start.getPosY(); i > (start.getPosY() - size); i--) 
 					board.getBoardCellFromCoord(start.getPosX(), i).setShipOver( this );
 				
 				break;
 				
 			case EAST:
 				
-				for (int i=start.getPosX(); i < (start.getPosX() + mSize); i++) 
+				for (int i=start.getPosX(); i < (start.getPosX() + size); i++) 
 					board.getBoardCellFromCoord(i, start.getPosY()).setShipOver( this );
 				
 				break;
 				
 			case SOUTH:
 				
-				for (int i=start.getPosY(); i < (start.getPosY() + mSize); i++) 
+				for (int i=start.getPosY(); i < (start.getPosY() + size); i++) 
 					board.getBoardCellFromCoord(start.getPosX(), i).setShipOver( this );
 				
 				break;
 				
 			case WEST:
 				
-				for (int i=start.getPosX(); i > (start.getPosX() - mSize); i--) 
+				for (int i=start.getPosX(); i > (start.getPosX() - size); i--) 
 					board.getBoardCellFromCoord(i, start.getPosY()).setShipOver( this );
 				
 				break;
@@ -125,33 +123,35 @@ public class Ship implements Parcelable {
 	
 	public void remove(Board board) {
 		
+		int size = mShipType.getSize();
+		
 		BoardCell start = new BoardCell(mStartX, mStartY);
 		
 		switch (mDirection) {
 		case NORTH:
 			
-			for (int i=start.getPosY(); i > (start.getPosY() - mSize); i--) 
+			for (int i=start.getPosY(); i > (start.getPosY() - size); i--) 
 				board.getBoardCellFromCoord(start.getPosX(), i).free();
 			
 			break;
 			
 		case EAST:
 			
-			for (int i=start.getPosX(); i < (start.getPosX() + mSize); i++) 
+			for (int i=start.getPosX(); i < (start.getPosX() + size); i++) 
 				board.getBoardCellFromCoord(i, start.getPosY()).free();
 			
 			break;
 			
 		case SOUTH:
 			
-			for (int i=start.getPosY(); i < (start.getPosY() + mSize); i++) 
+			for (int i=start.getPosY(); i < (start.getPosY() + size); i++) 
 				board.getBoardCellFromCoord(start.getPosX(), i).free();
 			
 			break;
 			
 		case WEST:
 			
-			for (int i=start.getPosX(); i > (start.getPosX() - mSize); i--) 
+			for (int i=start.getPosX(); i > (start.getPosX() - size); i--) 
 				board.getBoardCellFromCoord(i, start.getPosY()).free();
 			
 			break;
@@ -181,10 +181,6 @@ public class Ship implements Parcelable {
 		mSelected = false;
 	}
 
-	public String getName() {
-		return mName;
-	}
-
 	public ShipType getShipType() {
 		return mShipType;
 	}
@@ -201,5 +197,19 @@ public class Ship implements Parcelable {
 		return mDirection;
 	}
 	
+	public void hit() {
+		
+		mHittedParts++;
+		
+		if ( mHittedParts == mShipType.getSize() ) {
+			
+			mSinked = true;
+		}
+	}
+	
+	public boolean isSinked() {
+		
+		return mSinked;
+	}
 	
 }

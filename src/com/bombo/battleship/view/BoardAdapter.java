@@ -293,4 +293,36 @@ public class BoardAdapter {
 		}
 	}
 	
+	public void redrawEntireBoard() {
+		
+		for ( BoardCell cell : mBoard.getBoard() ) {
+			
+			drawCellStatus( cell );
+		}
+	}
+	
+	public void drawCellStatus( BoardCell cell ) {
+		
+		ImageView v = ( ImageView ) mParent.findViewById( 
+				mBoard.getIdFromCoord( cell.getPosX(), cell.getPosY() ) );
+		
+		if ( cell.isOccupied() ) {
+			
+			if ( cell.isHitted() ) {
+				
+				v.setImageDrawable( mParent.getResources().getDrawable( R.drawable.red_square ) );
+			} else {
+				v.setImageDrawable( mParent.getResources().getDrawable( R.drawable.grey_square ) );
+			}
+			
+		} else {
+			
+			if ( cell.isHitted() ) {
+				
+				v.setImageDrawable( mParent.getResources().getDrawable( R.drawable.light_blue_square ) );
+			} else {
+				v.setImageDrawable( mParent.getResources().getDrawable( R.drawable.blue_square ) );
+			}
+		}
+	}
 }

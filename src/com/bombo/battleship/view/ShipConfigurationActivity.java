@@ -66,8 +66,8 @@ public class ShipConfigurationActivity extends Activity {
 			//In case is the first time activity is launched
 			mGamePreferences = getIntent().getExtras().getParcelable(GamePreferences.GAME_PREFERENCES_TAG);
 			mShipConfiguration = new ShipConfiguration();
-			mBoard = new Board( mGamePreferences.getGridSize(), mShipConfiguration );
 			mShipConfiguration.readShipsPreference(mGamePreferences);
+			mBoard = new Board( mGamePreferences.getGridSize(), mShipConfiguration );
 			
 			isRecreated = false;
 		}

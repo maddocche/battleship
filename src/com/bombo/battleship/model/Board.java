@@ -8,6 +8,8 @@ import com.bombo.battleship.util.Utilities;
 public class Board implements Parcelable{
 
 	public static final String BOARD_TAG = "Board";
+	public static final String PLAYER_BOARD = "PlayerBoard";
+	public static final String OPPONENT_BOARD = "OpponentBoard";
 	
 	protected BoardCell[] mBoard;
 	protected int mSize;
@@ -29,6 +31,8 @@ public class Board implements Parcelable{
 		
 		mIDs = new int[ mSize ];
 		mShipConfiguration = shipConfiguration;
+		
+		mShipConfiguration.putPositionedShipsOnBoard( this );
 	}
 
 	private Board( Parcel in ) {
@@ -170,4 +174,9 @@ public class Board implements Parcelable{
 		mShipConfiguration.removeShipFromBoard( ship, this ); 
 	}
 	
+	public BoardCell[] getBoard() {
+		
+		return mBoard;
+		
+	}
 }

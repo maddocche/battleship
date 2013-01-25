@@ -115,5 +115,26 @@ public class ShipConfiguration implements Parcelable {
 	public boolean areAllShipsPositioned() {
 		return mAllShipsPositioned;
 	}
+	
+	public boolean areAllShipsSinked() {
+		
+		for ( Ship ship : mShips ) 
+			if ( !ship.isSinked() )
+				return false;
+		
+		return true;
+		
+	}
+	
+	public void putPositionedShipsOnBoard( Board board ) {
+
+		for ( Ship ship : mShips ) {
+			
+			if ( ship.isPositioned() ) {
+				
+				ship.setShipPosition( ship.getFirstCell(), ship.getDirection(), board );
+			}
+		}
+	}
 
 }

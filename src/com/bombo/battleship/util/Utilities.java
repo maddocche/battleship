@@ -92,7 +92,7 @@ public class Utilities {
 			
 			do {
 				
-				start = generateRandomStartCell( gridSize );
+				start = generateRandomCell( gridSize );
 				direction = generateRandomDirection();
 				
 			} while ( !board.isValidDirection( start, direction, ship.getShipType() ) );
@@ -103,7 +103,7 @@ public class Utilities {
 		return configuration;
 	}
 	
-	public static BoardCell generateRandomStartCell( int gridSize ) {
+	public static BoardCell generateRandomCell( int gridSize ) {
 		
 		int startX = ( int ) Math.round( Math.random() * ( gridSize - 1 ) ) + 1;
 		int startY = ( int ) Math.round( Math.random() * ( gridSize - 1 ) ) + 1;
