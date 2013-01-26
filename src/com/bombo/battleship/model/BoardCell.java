@@ -81,12 +81,14 @@ public class BoardCell implements Parcelable {
 		return mOccupied;
 	}
 	
-	public void hit() {
+	public boolean hit() {
 		
 		mHitted = true;
 		
 		if ( mShipOver != null ) 
 			mShipOver.hit();
+		
+		return mOccupied;
 		
 	}
 	

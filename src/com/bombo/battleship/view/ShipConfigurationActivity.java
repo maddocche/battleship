@@ -37,7 +37,7 @@ public class ShipConfigurationActivity extends Activity {
 	protected Board mBoard;
 	protected Ship mSelectedShip;
 	protected ShipsListAdapter mShipsListAdapter;
-	protected BoardAdapter mBoardAdapter;
+	protected BoardDrawHelper mBoardAdapter;
 	protected boolean isRecreated;
 	
 	@Override
@@ -74,7 +74,7 @@ public class ShipConfigurationActivity extends Activity {
 		
 		TableLayout tableLayout = (TableLayout) findViewById(R.id.configuration_board);
 		
-		mBoardAdapter = new BoardAdapter(this, mBoard, tableLayout);
+		mBoardAdapter = new BoardDrawHelper(this, mBoard, tableLayout);
 		mBoardAdapter.generateBoardView();
 		
 		setActionListener();
@@ -334,7 +334,7 @@ public class ShipConfigurationActivity extends Activity {
 		return mBoard;
 	}
 	
-	public BoardAdapter getBoardAdapter() {
+	public BoardDrawHelper getBoardAdapter() {
 		return mBoardAdapter;
 	}
 

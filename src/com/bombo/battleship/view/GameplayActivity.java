@@ -58,8 +58,8 @@ public class GameplayActivity extends Activity {
 		TableLayout playerBoardView = (TableLayout) findViewById(R.id.player_board);
 		TableLayout opponentBoardView = (TableLayout) findViewById(R.id.opponent_board);
 		
-		BoardAdapter playerBoardAdapter = new BoardAdapter(this, playerBoard, playerBoardView);
-		BoardAdapter opponentBoardAdapter = new BoardAdapter(this, opponentBoard, opponentBoardView);
+		BoardDrawHelper playerBoardAdapter = new BoardDrawHelper(this, playerBoard, playerBoardView);
+		BoardDrawHelper opponentBoardAdapter = new BoardDrawHelper(this, opponentBoard, opponentBoardView);
 		
 		mGameController.setPlayerBoardAdapter(playerBoardAdapter);
 		mGameController.setOpponentBoardAdapter(opponentBoardAdapter);

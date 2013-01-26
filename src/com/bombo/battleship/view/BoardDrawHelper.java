@@ -17,13 +17,13 @@ import com.bombo.battleship.model.ShipType;
 import com.bombo.battleship.util.ConfigurationDragHelper;
 import com.bombo.battleship.util.Utilities;
 
-public class BoardAdapter {
+public class BoardDrawHelper {
 
 	protected Board mBoard;
 	protected Activity mParent;
 	protected TableLayout mBoardView;
 	
-	public BoardAdapter( Activity parent, Board board, TableLayout boardView ) {
+	public BoardDrawHelper( Activity parent, Board board, TableLayout boardView ) {
 		
 		mBoard = board;
 		mParent = parent;
@@ -293,15 +293,15 @@ public class BoardAdapter {
 		}
 	}
 	
-	public void redrawEntireBoard() {
+	public void redrawEntireBoard( String boardType ) {
 		
 		for ( BoardCell cell : mBoard.getBoard() ) {
 			
-			drawCellStatus( cell );
+			drawCellStatus( cell, boardType );
 		}
 	}
 	
-	public void drawCellStatus( BoardCell cell ) {
+	public void drawCellStatus( BoardCell cell, String boardType ) {
 		
 		ImageView v = ( ImageView ) mParent.findViewById( 
 				mBoard.getIdFromCoord( cell.getPosX(), cell.getPosY() ) );
@@ -312,7 +312,13 @@ public class BoardAdapter {
 				
 				v.setImageDrawable( mParent.getResources().getDrawable( R.drawable.red_square ) );
 			} else {
-				v.setImageDrawable( mParent.getResources().getDrawable( R.drawable.grey_square ) );
+				
+				if ( boardType == Board.PLAYER_BOARD ) {
+					
+					v.setImageDrawable( mParent.getResources().getDrawable( R.drawable.grey_square ) );
+				} else {
+					v.setImageDrawable( mParent.getResources().getDrawable( R.drawable.blue_square ) );
+				}
 			}
 			
 		} else {
