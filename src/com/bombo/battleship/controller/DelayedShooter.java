@@ -4,6 +4,7 @@ import android.os.AsyncTask;
 
 public class DelayedShooter extends AsyncTask< Void, Void, Void> {
 
+	public static final long SHOOT_DELAY = 1000L;
 	protected GameplayController mGameController;
 	
 	public DelayedShooter( GameplayController gameController ) {
@@ -16,7 +17,7 @@ public class DelayedShooter extends AsyncTask< Void, Void, Void> {
 		
 		try {
 			
-			Thread.sleep( 500 );
+			Thread.sleep( SHOOT_DELAY );
 			
 		} catch (Exception e) {
 			e.printStackTrace();

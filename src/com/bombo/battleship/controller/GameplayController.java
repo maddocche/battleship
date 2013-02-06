@@ -56,12 +56,12 @@ public class GameplayController {
 		if ( !mPlayerWon && !mOpponentWon && !mOpponentTurn ) {
 			
 			boolean hitSomething;
-			BoardCell hittedCell = mOpponentBoard.getBoardCellFromId( v.getId() );
+			BoardCell selectedCell = mOpponentBoard.getBoardCellFromId( v.getId() );
 			
-			if ( !hittedCell.isHitted() ) {
+			if ( !selectedCell.isHitted() ) {
 				
-				hitSomething = hittedCell.hit();
-				mOpponentBoardAdapter.drawCellStatus( hittedCell, Board.OPPONENT_BOARD );
+				hitSomething = selectedCell.hit();
+				mOpponentBoardAdapter.drawCellStatus( selectedCell, Board.OPPONENT_BOARD );
 				
 				if ( mOpponentBoard.getShipConfiguration().areAllShipsSinked() ) {
 					

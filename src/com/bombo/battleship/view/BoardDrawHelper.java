@@ -87,7 +87,7 @@ public class BoardDrawHelper {
 						tableRow.addView(textView, rowParams);
 					} else {
 						imageView = new ImageView( mParent.getApplication() );
-						imageView.setImageResource(R.drawable.blue_square);
+						//imageView.setImageResource(R.drawable.blue_square);
 						uniqueID = util.getNextId( mParent );
 						imageView.setId(uniqueID);
 						tableRow.addView(imageView, rowParams);

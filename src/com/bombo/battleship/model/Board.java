@@ -8,6 +8,7 @@ import com.bombo.battleship.util.Utilities;
 public class Board implements Parcelable{
 
 	public static final String BOARD_TAG = "Board";
+	public static final String BOARD_TYPE = "BoardType";
 	public static final String PLAYER_BOARD = "PlayerBoard";
 	public static final String OPPONENT_BOARD = "OpponentBoard";
 	

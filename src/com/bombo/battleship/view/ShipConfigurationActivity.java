@@ -76,6 +76,7 @@ public class ShipConfigurationActivity extends Activity {
 		
 		mBoardAdapter = new BoardDrawHelper(this, mBoard, tableLayout);
 		mBoardAdapter.generateBoardView();
+		mBoardAdapter.redrawEntireBoard( Board.PLAYER_BOARD );
 		
 		setActionListener();
 		
@@ -87,7 +88,7 @@ public class ShipConfigurationActivity extends Activity {
 		
 		if (isRecreated) {
 			
-			mBoardAdapter.redrawPositionedShips(mShipConfiguration);
+			//mBoardAdapter.redrawPositionedShips(mShipConfiguration);
 			
 			if ( mShipConfiguration.areAllShipsPositioned() )
 				enableStartGameButton();

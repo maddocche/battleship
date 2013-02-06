@@ -4,34 +4,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
     
-    <TextView 
-        android:id="@+id/player_board_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Player board"
-	    android:layout_alignParentTop="true"
-	    android:layout_alignParentLeft="true" />
-    
-    <TableLayout 
-	    android:id="@+id/player_board"
-	    android:layout_width="wrap_content"
-	    android:layout_height="wrap_content"
-	    android:layout_below="@id/player_board_title"
-	    android:layout_alignParentLeft="true" />
-    
-    <TextView 
-        android:id="@+id/opponent_board_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Opponent board"
-	    android:layout_toRightOf="@id/player_board"
-	    android:layout_alignParentTop="true" />
-    
-    <TableLayout 
-	    android:id="@+id/opponent_board"
-	    android:layout_width="wrap_content"
-	    android:layout_height="wrap_content"
-	    android:layout_toRightOf="@id/player_board"
-	    android:layout_below="@id/opponent_board_title" />
+    <fragment 
+        android:id="@+id/fragment_container"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        />
 
 </RelativeLayout>
